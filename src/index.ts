@@ -1,1 +1,1 @@
-console.log('hello');
+// eslint setup
