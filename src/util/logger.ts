@@ -5,7 +5,9 @@ import config from '../config/config';
 import { EApplicationEnvironment } from '../constant/application';
 import path from 'path';
 import { blue, cyanBright, magenta, red, yellow } from 'colorette';
+import 'winston-mongodb';
 import * as sourceMapSupport from 'source-map-support';
+import { MongoDBTransportInstance } from 'winston-mongodb';
 
 // linking trace support
 sourceMapSupport.install();
@@ -94,9 +96,22 @@ const fileTransport = (): Array<FileTransportInstance> => {
   ];
 };
 
+const mongoDBTransport = (): Array<MongoDBTransportInstance> => {
+  return [
+    new transports.MongoDB({
+      level: 'info',
+      db: config.DATABASE_URL_LOCAL as string,
+      metaKey: 'meta',
+      options: { useUnifiedTopology: true },
+      expireAfterSeconds: 3600 * 24 * 30, // 30 days
+      collection: 'logs',
+    }),
+  ];
+};
+
 export default createLogger({
   defaultMeta: {
     meta: {},
   },
-  transports: [...fileTransport(), ...consoleTransport()],
+  transports: [...fileTransport(), ...mongoDBTransport(), ...consoleTransport()],
 });
