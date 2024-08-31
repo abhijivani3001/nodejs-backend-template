@@ -4,25 +4,39 @@ import util from 'util';
 import config from '../config/config';
 import { EApplicationEnvironment } from '../constant/application';
 import path from 'path';
+import { blue, cyanBright, magenta, red, yellow } from 'colorette';
 import * as sourceMapSupport from 'source-map-support';
 
 // linking trace support
 sourceMapSupport.install();
 
+const colorizeLevel = (level: string) => {
+  switch (level) {
+    case 'ERROR':
+      return red(level);
+    case 'INFO':
+      return blue(level);
+    case 'WARN':
+      return yellow(level);
+    default:
+      return level;
+  }
+};
+
 const consoleLogFormat = format.printf((info) => {
   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
   const { timestamp, level, message, meta = {} } = info;
 
-  const customLevel = level.toUpperCase();
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-  const customTimestamp = timestamp;
+  const customLevel = colorizeLevel(level.toUpperCase());
+
+  const customTimestamp = cyanBright(timestamp as string);
 
   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
   const customeMessage = message;
 
-  const customMeta = util.inspect(meta, { showHidden: false, depth: null });
+  const customMeta = util.inspect(meta, { showHidden: false, depth: null, colors: true });
 
-  const customLog = `${customLevel} [${customTimestamp}] ${customeMessage}\nMETA ${customMeta}\n`;
+  const customLog = `\n${customLevel} [${customTimestamp}] ${customeMessage}\n${magenta('META')} ${customMeta}\n`;
 
   return customLog;
 });
