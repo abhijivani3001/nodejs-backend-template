@@ -36,7 +36,7 @@ const consoleLogFormat = format.printf((info) => {
 
   const customMeta = util.inspect(meta, { showHidden: false, depth: null, colors: true });
 
-  const customLog = `\n${customLevel} [${customTimestamp}] ${customeMessage}\n${magenta('META')} ${customMeta}\n`;
+  const customLog = `\n${customLevel} [${customTimestamp}] ${customeMessage}\n${magenta('META')} ${customMeta}`;
 
   return customLog;
 });
